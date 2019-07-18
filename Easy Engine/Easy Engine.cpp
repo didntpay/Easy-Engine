@@ -1,11 +1,15 @@
-// Easy Engine.cpp : Defines the entry point for the console application.
+// Easy Engin.cpp : Defines the entry point for the console application.
 //
 
 #include "stdafx.h"
-
-
+#include "MemoryScanner.h"
+#include <iostream>
 int main()
 {
-    return 0;
+	MemoryScanner * ms = new MemoryScanner(18592);
+	ms->init();
+	cout << ms->firstScan() + "he" << endl;
+
+	while (1) {}
 }
 
