@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "MemoryScanner.h"
-
+#include <iostream>
 MemoryScanner::MemoryScanner(DWORD procID)
 {
 	this->pid = procID;
@@ -12,15 +12,15 @@ void MemoryScanner::init()
 	this->hProc = OpenProcess(access, false, this->pid);
 }
 
-string MemoryScanner::firstScan()
+DWORD MemoryScanner::firstScan()
 {
 	SYSTEM_INFO info = { 0 };
 	GetSystemInfo(&info);
 
-	long add_sta = (long)info.lpMinimumApplicationAddress;
-	long add_end = (long)info.lpMaximumApplicationAddress;
-
-	return add_sta + " " + add_end;
+	auto add_sta = (DWORD)info.lpMinimumApplicationAddress;
+	auto add_end = (DWORD)info.lpMaximumApplicationAddress;
+	
+	return 0x10;
 }
 
 MemoryScanner::~MemoryScanner()

@@ -13,7 +13,7 @@ public:
 
 	void init();
 
-	string firstScan();
+	DWORD firstScan();
 
 	~MemoryScanner();
 };

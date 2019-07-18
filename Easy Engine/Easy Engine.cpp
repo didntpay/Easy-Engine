@@ -9,7 +9,7 @@ int main()
 	MemoryScanner * ms = new MemoryScanner(18592);
 	ms->init();
 	cout << ms->firstScan() + "he" << endl;
-
+	delete ms;
 	while (1) {}
 }
 
