@@ -6,9 +6,10 @@
 #include <iostream>
 int main()
 {
-	MemoryScanner * ms = new MemoryScanner(18592);
+	MemoryScanner * ms = new MemoryScanner(21312);
 	ms->init();
-	cout << ms->firstScan() + "he" << endl;
+	ScannerInput SCIN(0, 0);
+	ms->firstScan(SCIN);
 	delete ms;
 	while (1) {}
 }
