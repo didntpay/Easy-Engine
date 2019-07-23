@@ -57,7 +57,7 @@ public:
 	void init();
 
 	//template <typename T>
-	DWORD MemoryScanner::firstScan(ScannerInput SCIN);
+	DWORD MemoryScanner::firstScan(ScannerInput SCIN, int val);
 
 	~MemoryScanner();
 };
