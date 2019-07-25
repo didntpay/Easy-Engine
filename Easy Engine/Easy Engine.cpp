@@ -6,7 +6,7 @@
 #include <iostream>
 int main()
 {
-	MemoryScanner * ms = new MemoryScanner(15184);
+	MemoryScanner * ms = new MemoryScanner(17572);
 	ms->init();
 	ScannerInput SCIN(0, 0);
 	ms->firstScan(SCIN, 100);

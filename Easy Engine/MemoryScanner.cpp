@@ -41,14 +41,16 @@ DWORD MemoryScanner::firstScan(ScannerInput SCIN, int val)
 			current_base += mbi.RegionSize;
 		}
 	}
-	long read = 0;
+	
 	vector<ScannerOuput> SCOU;
 	for each (MEMORY_BASIC_INFORMATION mbi in search_region) 
 	{		
-		unsigned char * buffer = new unsigned char[mbi.RegionSize + 1];
-		if (ReadProcessMemory(this->hProc, mbi.BaseAddress, buffer, mbi.RegionSize, NULL))
+		vector<char> buffer(mbi.RegionSize);
+		if (ReadProcessMemory(this->hProc, mbi.BaseAddress, &buffer[0], mbi.RegionSize, NULL))
 		{
+			int read = 0;
 			uint8_t increament;
+
 			switch (SCIN.ST) 
 			{
 				case ScanType::int_value:
@@ -60,6 +62,7 @@ DWORD MemoryScanner::firstScan(ScannerInput SCIN, int val)
 				case ScanType::boolean_value:
 					increament = sizeof(bool);
 			}
+
 			for (int i = 0; i < mbi.RegionSize; i += increament) 
 			{
 				DWORD address = (DWORD)mbi.BaseAddress + i;
@@ -80,8 +83,6 @@ DWORD MemoryScanner::firstScan(ScannerInput SCIN, int val)
 			cout << "Read process memory failed, " + error << endl;
 		}
 
-		delete[] buffer;
-		buffer = NULL;
 	}
 	return 0x10;
 }
