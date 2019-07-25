@@ -23,7 +23,7 @@ DWORD MemoryScanner::firstScan(ScannerInput SCIN, int val)
 	DWORD pagesize = info.dwPageSize;
 	vector<MEMORY_BASIC_INFORMATION> search_region;
 
-	for (DWORD current_base = add_sta; current_base < add_end;)
+	for (DWORD current_base = add_sta; current_base <= add_end;)
 	{
 		MEMORY_BASIC_INFORMATION mbi = { 0 };
 		if (!VirtualQueryEx(this->hProc, (LPVOID)current_base, &mbi, sizeof(mbi)))
@@ -45,7 +45,7 @@ DWORD MemoryScanner::firstScan(ScannerInput SCIN, int val)
 	vector<ScannerOuput> SCOU;
 	for each (MEMORY_BASIC_INFORMATION mbi in search_region) 
 	{		
-		byte * buffer = new byte[mbi.RegionSize];
+		unsigned char * buffer = new unsigned char[mbi.RegionSize + 1];
 		if (ReadProcessMemory(this->hProc, mbi.BaseAddress, buffer, mbi.RegionSize, NULL))
 		{
 			uint8_t increament;
@@ -62,14 +62,13 @@ DWORD MemoryScanner::firstScan(ScannerInput SCIN, int val)
 			}
 			for (int i = 0; i < mbi.RegionSize; i += increament) 
 			{
-				DWORD address = (DWORD)mbi.BaseAddress + i * increament;
+				DWORD address = (DWORD)mbi.BaseAddress + i;
 				int32_t value = NULL;
-				for (int j = read; j < increament; j++) 
+				for (int j = increament - 1; j >= 0; j--) 
 				{
-					value = value << 8 + buffer[j];
+					value = value << (8 * j) | buffer[j + read];
 				}
 				read += increament;
-				//cout << buffer[i] << endl;
 				if(value == val)
 					SCOU.push_back(ScannerOuput(address, value));
 			}
@@ -82,6 +81,7 @@ DWORD MemoryScanner::firstScan(ScannerInput SCIN, int val)
 		}
 
 		delete[] buffer;
+		buffer = NULL;
 	}
 	return 0x10;
 }
