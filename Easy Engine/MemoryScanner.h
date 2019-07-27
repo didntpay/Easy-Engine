@@ -4,7 +4,9 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include "sorting.h"
 using namespace std;
+
 enum ScanType 
 {
 	int_value,
@@ -31,7 +33,7 @@ typedef const struct ScannerInput
 		this->ST = (ScanType)scanType;
 		this->SME = (ScanMethod)scanMethod;
 	}
-};
+} SI;
 
 typedef const struct ScannerOuput 
 {
@@ -43,13 +45,29 @@ typedef const struct ScannerOuput
 		this->address = add;
 		this->value = val;
 	}
-};
+
+	ScannerOuput()
+	{
+		this->address = NULL;
+		this->value = NULL;
+	}
+} SO;
+
+void transferElement(ScannerOuput* values, vector<ScannerOuput> temp) 
+{
+	for (int i = 0; i < temp.size; i++) 
+	{
+		values[i] = temp[i];
+	}
+}
 
 class MemoryScanner
 {
 private:
 	DWORD pid;
 	HANDLE hProc;
+	ScannerOuput* SCOU;
+	UINT32 size;
 
 public:
 	MemoryScanner(DWORD procID);

@@ -4,6 +4,9 @@
 MemoryScanner::MemoryScanner(DWORD procID)
 {
 	this->pid = procID;
+	this->hProc = NULL;
+	this->SCOU = NULL;
+	this->size = NULL;
 }
 
 void MemoryScanner::init()
@@ -42,26 +45,14 @@ DWORD MemoryScanner::firstScan(ScannerInput SCIN, int val)
 		}
 	}
 	int found = 0;
-	vector<ScannerOuput> SCOU;
+	vector<ScannerOuput> SCOU_V; //temporary
 	for each (MEMORY_BASIC_INFORMATION mbi in search_region) 
 	{		
-		unsigned char * buffer = new unsigned char[mbi.RegionSize];
+		unsigned char * buffer = new unsigned char[mbi.RegionSize + 1];
 		if (ReadProcessMemory(this->hProc, mbi.BaseAddress, &buffer[0], mbi.RegionSize, NULL))
 		{
 			int read = 0;
 			uint8_t increament = 4;
-
-			/*switch (SCIN.ST) 
-			{
-				case ScanType::int_value:
-					increament = sizeof(int);
-					break;
-				case ScanType::float_value:
-					increament = sizeof(float);
-					break;
-				case ScanType::boolean_value:
-					increament = sizeof(bool);
-			}*/
 
 			for (int i = 0; i < mbi.RegionSize; i += increament) 
 			{
@@ -73,7 +64,7 @@ DWORD MemoryScanner::firstScan(ScannerInput SCIN, int val)
 				}
 				read += increament;
 				if (value == val)
-					SCOU.push_back(ScannerOuput(address, value));
+					SCOU_V.push_back(ScannerOuput(address, value));
 
 			}
 
@@ -83,6 +74,13 @@ DWORD MemoryScanner::firstScan(ScannerInput SCIN, int val)
 			auto error = GetLastError();
 			cout << "Read process memory failed, " + error << endl;
 		}
+
+		this->SCOU = (ScannerOuput*)malloc(sizeof(ScannerOuput) * SCOU_V.size);
+		transferElement(this->SCOU, SCOU_V);
+		this->size = SCOU_V.size;
+		quicksort(0, this->size, this->SCOU);//don't run until < and > is overloaded
+
+
 		delete[] buffer;
 		buffer = NULL;
 	}
@@ -91,4 +89,6 @@ DWORD MemoryScanner::firstScan(ScannerInput SCIN, int val)
 
 MemoryScanner::~MemoryScanner()
 {
+	free(this->SCOU);
+	this->SCOU = NULL;
 }
