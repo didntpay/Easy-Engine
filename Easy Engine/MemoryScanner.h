@@ -48,44 +48,9 @@ typedef const struct ScannerInput
 } SI;
 
 
-typedef struct ScannerOutput 
-{
-	DWORD  address;
-	DWORD  value;
-	bool changed;
-	DWORD difference;
-
-	ScannerOutput(DWORD add, DWORD val)
-	{
-		this->address = add;
-		this->value = val;
-		this->changed = false;
-		this->difference = NULL;
-	}
-
-	ScannerOutput()
-	{
-		this->address = NULL;
-		this->value = NULL;
-		this->changed = false;
-		this->difference = NULL;
-	}
-
-	bool operator > (const ScannerOutput& other) const
-	{
-		int difference = this->value - other.value;
-		return difference > 0;
-	}
-	
-	bool operator < (const ScannerOutput& other) const
-	{
-		int difference = this->value - other.value;
-		return difference < 0;
-	}
-} SO, NEXT_SCAN_INPUT;
 
 
-
+template <typename T>
 class MemoryScanner
 {
 private:
@@ -96,6 +61,43 @@ private:
 
 
 public:
+
+	typedef struct ScannerOutput
+	{
+		DWORD  address;
+		T  value;
+		bool changed;
+		DWORD difference;
+
+		ScannerOutput(DWORD add, T val)
+		{
+			this->address = add;
+			this->value = val;
+			this->changed = false;
+			this->difference = NULL;
+		}
+
+		ScannerOutput()
+		{
+			this->address = NULL;
+			this->value = NULL;
+			this->changed = false;
+			this->difference = NULL;
+		}
+
+		bool operator > (const ScannerOutput& other) const
+		{
+			int difference = this->value - other.value;
+			return difference > 0;
+		}
+
+		bool operator < (const ScannerOutput& other) const
+		{
+			int difference = this->value - other.value;
+			return difference < 0;
+		}
+	} SO, NEXT_SCAN_INPUT;
+
 	MemoryScanner(DWORD procID);
 
 	void init();
@@ -103,9 +105,10 @@ public:
 	//template <typename T>
 	DWORD firstScan(ScannerInput SCIN, int val);
 
-	template<typename T>
+
 	DWORD scanNext(DWORD scanFlag, T val);
 	void updateScannedList(ScannerOutput& SCOU, unsigned char* buffer, DWORD scanflag);
 	~MemoryScanner();
 };
 
+#include "MemoryScanner.cpp"

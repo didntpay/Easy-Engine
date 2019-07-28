@@ -1,9 +1,11 @@
 #include "stdafx.h"
 #include "MemoryScanner.h"
 
+template <typename T>
 void transferElement(ScannerOutput* values, vector<ScannerOutput>& temp);
 
-MemoryScanner::MemoryScanner(DWORD procID)
+template <typename T>
+MemoryScanner<T>::MemoryScanner(DWORD procID)
 {
 	this->pid = procID;
 	this->hProc = NULL;
@@ -11,14 +13,15 @@ MemoryScanner::MemoryScanner(DWORD procID)
 	this->size = NULL;
 }
 
-void MemoryScanner::init()
+template <typename T>
+void MemoryScanner<T>::init()
 {
 	DWORD access = PROCESS_VM_OPERATION | PROCESS_VM_READ | PROCESS_QUERY_INFORMATION;
 	this->hProc = OpenProcess(access, false, this->pid);
 }
 
-//template <typename T>
-DWORD MemoryScanner::firstScan(ScannerInput SCIN, int val)
+template <typename T>
+DWORD MemoryScanner<T>::firstScan(ScannerInput SCIN, int val)
 {
 	SYSTEM_INFO info = { 0 };
 	GetSystemInfo(&info);
@@ -62,7 +65,7 @@ DWORD MemoryScanner::firstScan(ScannerInput SCIN, int val)
 			for (int i = 0; i < mbi.RegionSize; i += increament) 
 			{
 				DWORD address = (DWORD)mbi.BaseAddress + i;
-				int32_t value = NULL;
+				int value = NULL;
 				for (int j = increament - 1; j >= 0; j--) 
 				{
 					value = value << (8 * j) | buffer[j + read];
@@ -93,7 +96,7 @@ DWORD MemoryScanner::firstScan(ScannerInput SCIN, int val)
 }
 
 template<typename T>
-DWORD MemoryScanner::scanNext(DWORD scanFlag, T val)
+DWORD MemoryScanner<T>::scanNext(DWORD scanFlag, T val)
 {
 	DWORD scantype = scanFlag & 0xF0; //take out the lower half
 	DWORD scanmethod = scanFlag & 0x0F;
@@ -121,14 +124,24 @@ DWORD MemoryScanner::scanNext(DWORD scanFlag, T val)
 			this->SCOU[i].changed = false;
 			this->SCOU[i].difference = NULL;
 		}
+
+		updated_SCOU[i] = ScannerOutput(this->SCOU[i].address, updated_value);
+
+		delete[] buffer;
+		buffer = NULL;
 	}
+
+	delete[] this->SCOU;
+	this->SCOU = updated_SCOU;
+	updated_SCOU = NULL;
 
 	return 0x10;
 }
 
-void MemoryScanner::updateScannedList(ScannerOutput& SCOU, unsigned char* buffer, DWORD scanflag) 
+template <typename T>
+void MemoryScanner<T>::updateScannedList(ScannerOutput& SCOU, unsigned char* buffer, DWORD scanflag) 
 {
-	if (ReadProcessMemory(this->hProc, (LPVOID)SCOU.address, &buffer[0], sizeof((int)scanflag), NULL) == 0)
+	if (ReadProcessMemory(this->hProc, (LPVOID)SCOU.address, &buffer[0], (int)scanflag, NULL) == 0)
 	{
 		auto error = GetLastError();
 		cout << "Read process memory failed, " + error << endl;
@@ -137,7 +150,8 @@ void MemoryScanner::updateScannedList(ScannerOutput& SCOU, unsigned char* buffer
 	
 }
 
-void transferElement(ScannerOutput* values, vector<ScannerOutput>& temp)
+template <typename T>
+void transferElement(MemoryScanner<T>::ScannerOutput* values, vector<MemoryScanner<T>::ScannerOutput>& temp)
 {
 	int size = temp.size();
 	for (int i = 0; i < size; i++)
@@ -146,7 +160,8 @@ void transferElement(ScannerOutput* values, vector<ScannerOutput>& temp)
 	}
 }
 
-MemoryScanner::~MemoryScanner()
+template<typename T>
+MemoryScanner<T>::~MemoryScanner()
 {
 	free(this->SCOU);
 	this->SCOU = NULL;
