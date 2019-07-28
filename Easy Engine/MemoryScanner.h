@@ -7,20 +7,32 @@
 #include "sorting.h"
 using namespace std;
 
-enum ScanType 
+//scan type takes the higher half;
+#define ST_INT 0x40
+#define ST_FLOAT 0x80
+#define ST_BOOL 0x10
+
+//scan method only takes the lower half
+#define SME_UNKNOWN 0x01
+#define SME_CHANGED 0x02
+#define SME_DECREASED 0x05
+#define SME_INCREASED 0x09
+#define SME_CHANGED_EXACT 0x0E
+
+enum ScanType
 {
-	int_value,
-	float_value,
-	boolean_value
+	int_value = 0x40,
+	float_value = 0x08,
+	boolean_value = 0x11
 };
 
-enum ScanMethod
+enum ScanMethod : byte
 {
-	search_unknown,
-	search_changed,
-	search_decreased,
-	search_increased,
-	search_changed_exact
+	search_unknown = 0x01,
+	search_changed = 0x10,
+	search_decreased = 0x80,
+	search_increased = 0x90,
+	search_changed_exact = 0xCE
 };
 
 typedef const struct ScannerInput 
@@ -35,39 +47,53 @@ typedef const struct ScannerInput
 	}
 } SI;
 
-typedef const struct ScannerOuput 
+
+typedef struct ScannerOutput 
 {
 	DWORD  address;
 	DWORD  value;
+	bool changed;
+	DWORD difference;
 
-	ScannerOuput(DWORD add, DWORD val)
+	ScannerOutput(DWORD add, DWORD val)
 	{
 		this->address = add;
 		this->value = val;
+		this->changed = false;
+		this->difference = NULL;
 	}
 
-	ScannerOuput()
+	ScannerOutput()
 	{
 		this->address = NULL;
 		this->value = NULL;
+		this->changed = false;
+		this->difference = NULL;
 	}
-} SO;
 
-void transferElement(ScannerOuput* values, vector<ScannerOuput> temp) 
-{
-	for (int i = 0; i < temp.size; i++) 
+	bool operator > (const ScannerOutput& other) const
 	{
-		values[i] = temp[i];
+		int difference = this->value - other.value;
+		return difference > 0;
 	}
-}
+	
+	bool operator < (const ScannerOutput& other) const
+	{
+		int difference = this->value - other.value;
+		return difference < 0;
+	}
+} SO, NEXT_SCAN_INPUT;
+
+
 
 class MemoryScanner
 {
 private:
 	DWORD pid;
 	HANDLE hProc;
-	ScannerOuput* SCOU;
+	ScannerOutput* SCOU;
 	UINT32 size;
+
 
 public:
 	MemoryScanner(DWORD procID);
@@ -75,8 +101,11 @@ public:
 	void init();
 
 	//template <typename T>
-	DWORD MemoryScanner::firstScan(ScannerInput SCIN, int val);
+	DWORD firstScan(ScannerInput SCIN, int val);
 
+	template<typename T>
+	DWORD scanNext(DWORD scanFlag, T val);
+	void updateScannedList(ScannerOutput& SCOU, unsigned char* buffer, DWORD scanflag);
 	~MemoryScanner();
 };
 

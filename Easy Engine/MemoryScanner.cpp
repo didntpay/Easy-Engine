@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "MemoryScanner.h"
 
+void transferElement(ScannerOutput* values, vector<ScannerOutput>& temp);
+
 MemoryScanner::MemoryScanner(DWORD procID)
 {
 	this->pid = procID;
@@ -24,7 +26,11 @@ DWORD MemoryScanner::firstScan(ScannerInput SCIN, int val)
 	DWORD add_sta = (DWORD)info.lpMinimumApplicationAddress;
 	DWORD add_end = (DWORD)info.lpMaximumApplicationAddress;
 	DWORD pagesize = info.dwPageSize;
+
+	int found = 0;
+
 	vector<MEMORY_BASIC_INFORMATION> search_region;
+	vector<ScannerOutput> SCOU_V; //temporary
 
 	for (DWORD current_base = add_sta; current_base <= add_end;)
 	{
@@ -44,8 +50,7 @@ DWORD MemoryScanner::firstScan(ScannerInput SCIN, int val)
 			current_base += mbi.RegionSize;
 		}
 	}
-	int found = 0;
-	vector<ScannerOuput> SCOU_V; //temporary
+
 	for each (MEMORY_BASIC_INFORMATION mbi in search_region) 
 	{		
 		unsigned char * buffer = new unsigned char[mbi.RegionSize + 1];
@@ -64,8 +69,7 @@ DWORD MemoryScanner::firstScan(ScannerInput SCIN, int val)
 				}
 				read += increament;
 				if (value == val)
-					SCOU_V.push_back(ScannerOuput(address, value));
-
+					SCOU_V.push_back(ScannerOutput(address, value));
 			}
 
 		}
@@ -75,16 +79,71 @@ DWORD MemoryScanner::firstScan(ScannerInput SCIN, int val)
 			cout << "Read process memory failed, " + error << endl;
 		}
 
-		this->SCOU = (ScannerOuput*)malloc(sizeof(ScannerOuput) * SCOU_V.size);
-		transferElement(this->SCOU, SCOU_V);
-		this->size = SCOU_V.size;
-		quicksort(0, this->size, this->SCOU);//don't run until < and > is overloaded
-
+		
 
 		delete[] buffer;
 		buffer = NULL;
 	}
+
+	this->SCOU = (ScannerOutput*)malloc(sizeof(ScannerOutput) * SCOU_V.size());
+	this->size = SCOU_V.size();
+
+	transferElement(SCOU, SCOU_V);
 	return 0x10;
+}
+
+template<typename T>
+DWORD MemoryScanner::scanNext(DWORD scanFlag, T val)
+{
+	DWORD scantype = scanFlag & 0xF0; //take out the lower half
+	DWORD scanmethod = scanFlag & 0x0F;
+	uint8_t increment = sizeof(T);
+	ScannerOutput* updated_SCOU = (ScannerOutput*)malloc(sizeof(ScannerOutput) * this->size);
+
+	for (int i = 0; i < this->size; i++) 
+	{
+		unsigned char* buffer = new unsigned char[sizeof(T)];
+		updateScannedList(this->SCOU[i], buffer, scantype);
+		T updated_value = NULL;
+		for (int i = increment - 1; i >= 0; i--)
+		{
+			updated_value = updated_value << (i * 8) | buffer[i];
+		}
+
+		if (updated_value == val && updated_value != this->SCOU[i].value) 
+		{
+			this->SCOU[i].changed = true;
+			this->SCOU[i].difference = this->SCOU[i].value - updated_value;
+			this->SCOU[i].value = updated_value;
+		}
+		else if (updated_value == this->SCOU[i].value) 
+		{
+			this->SCOU[i].changed = false;
+			this->SCOU[i].difference = NULL;
+		}
+	}
+
+	return 0x10;
+}
+
+void MemoryScanner::updateScannedList(ScannerOutput& SCOU, unsigned char* buffer, DWORD scanflag) 
+{
+	if (ReadProcessMemory(this->hProc, (LPVOID)SCOU.address, &buffer[0], sizeof((int)scanflag), NULL) == 0)
+	{
+		auto error = GetLastError();
+		cout << "Read process memory failed, " + error << endl;
+	}
+		
+	
+}
+
+void transferElement(ScannerOutput* values, vector<ScannerOutput>& temp)
+{
+	int size = temp.size();
+	for (int i = 0; i < size; i++)
+	{
+		values[i] = temp[i];
+	}
 }
 
 MemoryScanner::~MemoryScanner()
