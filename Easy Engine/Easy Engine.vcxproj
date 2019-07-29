@@ -152,7 +152,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Easy Engine.cpp" />
-    <ClCompile Include="MemoryScanner.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

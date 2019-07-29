@@ -1,10 +1,9 @@
 #include "stdafx.h"
-#include "MemoryScanner.h"
+//#include "MemoryScanner.h"
 
-template <typename T>
-void transferElement(ScannerOutput* values, vector<ScannerOutput>& temp);
 
-template <typename T>
+
+/*template <typename T>
 MemoryScanner<T>::MemoryScanner(DWORD procID)
 {
 	this->pid = procID;
@@ -131,7 +130,7 @@ DWORD MemoryScanner<T>::scanNext(DWORD scanFlag, T val)
 		buffer = NULL;
 	}
 
-	delete[] this->SCOU;
+	free(this->SCOU);
 	this->SCOU = updated_SCOU;
 	updated_SCOU = NULL;
 
@@ -151,7 +150,7 @@ void MemoryScanner<T>::updateScannedList(ScannerOutput& SCOU, unsigned char* buf
 }
 
 template <typename T>
-void transferElement(MemoryScanner<T>::ScannerOutput* values, vector<MemoryScanner<T>::ScannerOutput>& temp)
+void MemoryScanner<T>::transferElement(MemoryScanner<T>::ScannerOutput* values, vector<MemoryScanner<T>::ScannerOutput>& temp)
 {
 	int size = temp.size();
 	for (int i = 0; i < size; i++)
@@ -165,4 +164,4 @@ MemoryScanner<T>::~MemoryScanner()
 {
 	free(this->SCOU);
 	this->SCOU = NULL;
-}
+}*/
