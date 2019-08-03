@@ -49,11 +49,23 @@ typedef const struct ScannerInput
 	}
 } SI;
 
+class TMPMemoryScanner 
+{
+public:
+	TMPMemoryScanner() 
+	{
 
+	}
+
+	~TMPMemoryScanner() 
+	{
+
+	}
+};
 
 
 template <typename T>
-class MemoryScanner
+class MemoryScanner : public TMPMemoryScanner
 {
 
 public:
@@ -186,10 +198,10 @@ public:
 		return 0x10;
 	}
 
-	DWORD MemoryScanner<T>::scanNext(DWORD scanFlag, T val)
+	DWORD MemoryScanner<T>::scanNext(T val)
 	{
-		DWORD scantype = scanFlag & 0xF0; //take out the lower half
-		DWORD scanmethod = scanFlag & 0x0F;
+		//DWORD scantype = scanFlag & 0xF0; //take out the lower half
+		//DWORD scanmethod = scanFlag & 0x0F;
 		uint8_t increment = sizeof(T);
 		uint32_t updated_size = 0;
 		ScannerOutput* updated_SCOU = (ScannerOutput*)malloc(sizeof(ScannerOutput) * this->size);
@@ -239,7 +251,7 @@ public:
 
 	}
 
-	//template <typename T>
+
 	void MemoryScanner<T>::transferElement(MemoryScanner<T>::ScannerOutput* values, vector<MemoryScanner<T>::ScannerOutput>& temp)
 	{
 		int size = temp.size();
@@ -249,7 +261,6 @@ public:
 		}
 	}
 
-	//template<typename T>
 	MemoryScanner<T>::~MemoryScanner()
 	{
 		free(this->SCOU);
@@ -257,6 +268,5 @@ public:
 	}
 };
 
-//#include "MemoryScanner.cpp"
 
 #endif
