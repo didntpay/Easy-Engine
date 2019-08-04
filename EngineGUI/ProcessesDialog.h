@@ -1,6 +1,9 @@
 #pragma once
 #include "wx\wx.h"
 #include <string>
+#include <Windows.h>
+#include <psapi.h>
+#include <vector>
 using namespace std;
 class ProcessesDialog : public wxFrame//the panel to pop up when open process is clicked
 {
@@ -14,7 +17,6 @@ private:
 public:
 	ProcessesDialog();
 	~ProcessesDialog();
-	int getProcessList();
 	void printProcessses();
 };
 
