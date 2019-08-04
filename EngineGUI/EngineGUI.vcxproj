@@ -126,10 +126,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="GUIMain.cpp" />
+    <ClCompile Include="ProcessesDialog.cpp" />
     <ClCompile Include="ScannerPanel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GUIMain.h" />
+    <ClInclude Include="ProcessesDialog.h" />
     <ClInclude Include="ScannerPanel.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

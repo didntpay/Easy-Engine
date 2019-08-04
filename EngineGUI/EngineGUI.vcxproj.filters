@@ -21,12 +21,18 @@
     <ClCompile Include="ScannerPanel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ProcessesDialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GUIMain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ScannerPanel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ProcessesDialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

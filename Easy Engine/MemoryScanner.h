@@ -49,23 +49,9 @@ typedef const struct ScannerInput
 	}
 } SI;
 
-class TMPMemoryScanner 
-{
-public:
-	TMPMemoryScanner() 
-	{
-
-	}
-
-	~TMPMemoryScanner() 
-	{
-
-	}
-};
-
 
 template <typename T>
-class MemoryScanner : public TMPMemoryScanner
+class MemoryScanner
 {
 
 public:

@@ -26,33 +26,20 @@ ScannerPanel::ScannerPanel() :wxFrame(NULL, wxID_ANY, "Easy Engine Scanner", wxP
 
 ScannerPanel::~ScannerPanel() 
 {
-	
-
-	
-	
+	delete dialog;
 }
 
 void ScannerPanel::onFirstScanCliced(wxCommandEvent& evt) 
 {
-	switch (valuetype->GetSelection())
+	/*switch (valuetype->GetSelection())
 	{
-	case 0:
-		ms = new MemoryScanner<int>(0x808080);
-		break;
-	case 1:
-		ms = new MemoryScanner<string>(0x808080);
-		break;
-	case 2:
-		ms = new MemoryScanner<float>(0x808080);
-		break;
-	default:
-		return;
-	}
+	
+	}*/
 
 	evt.Skip();
 }
 
 void ScannerPanel::onOpenProcessClicked (wxCommandEvent& evt)
 {
-
+	dialog = new ProcessesDialog();
 }

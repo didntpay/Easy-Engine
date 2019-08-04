@@ -1,6 +1,7 @@
 #pragma once
 #include "wx\wx.h"
 #include "wx\dataview.h"
+#include "ProcessesDialog.h"
 #include "..\Easy Engine\MemoryScanner.h"
 class ScannerPanel :public wxFrame
 {
@@ -10,7 +11,7 @@ private:
 	wxButton* openprocess;
 	wxDataViewListCtrl* listctrl;
 	wxComboBox* valuetype;
-	TMPMemoryScanner* ms; //the parent class of MemoryScanner
+	ProcessesDialog* dialog;
 	DWORD procID;
 
 public:
