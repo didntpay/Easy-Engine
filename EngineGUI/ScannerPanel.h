@@ -1,8 +1,9 @@
 #pragma once
+
 #include "wx\wx.h"
 #include "wx\dataview.h"
-#include "ProcessesDialog.h"
 #include "..\Easy Engine\MemoryScanner.h"
+#include "ProcessesDialog.h"
 class ScannerPanel :public wxFrame
 {
 private:

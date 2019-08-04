@@ -4,7 +4,7 @@
 
 #include "wx\wx.h"
 #include "ScannerPanel.h"
-
+//#include "..\Easy Engine\MemoryScanner.h"
 class GUIMain:public wxApp
 {
 private:

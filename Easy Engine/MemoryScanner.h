@@ -37,12 +37,12 @@ enum ScanMethod : byte
 	search_changed_exact = 0xCE
 };
 
-typedef const struct ScannerInput 
+typedef const struct ScannerInput
 {
 	ScanType ST;
 	ScanMethod SME;
 
-	ScannerInput(int scanType, int scanMethod = NULL) 
+	ScannerInput(int scanType, int scanMethod = NULL)
 	{
 		this->ST = (ScanType)scanType;
 		this->SME = (ScanMethod)scanMethod;
@@ -98,7 +98,7 @@ private:
 	UINT32 size;
 
 
-public:	
+public:
 
 	MemoryScanner<T>::MemoryScanner(DWORD procID)
 	{
@@ -116,7 +116,7 @@ public:
 	}
 
 	//template <typename T>
-	DWORD MemoryScanner<T>::firstScan(ScannerInput SCIN, T val)
+	DWORD MemoryScanner<T>::firstScan(T val)
 	{
 		SYSTEM_INFO info = { 0 };
 		GetSystemInfo(&info);
@@ -197,7 +197,7 @@ public:
 			T* buffer = (T*)malloc(sizeof(T));
 			updateScannedList(this->SCOU[i], &buffer[0], increment);
 			T updated_value = *buffer;
-	
+
 
 			if (updated_value == val)
 			{
@@ -207,9 +207,9 @@ public:
 				if (updated_value != this->SCOU[i].value)
 				{
 					updated_SCOU[i].changed = true;
-					updated_SCOU[i].difference =  updated_value - this->SCOU[i].value;
+					updated_SCOU[i].difference = updated_value - this->SCOU[i].value;
 				}
-				
+
 			}
 
 			delete[] buffer;
@@ -247,7 +247,7 @@ public:
 		}
 	}
 
-	MemoryScanner<T>::~MemoryScanner()
+	MemoryScanner::~MemoryScanner() 
 	{
 		free(this->SCOU);
 		this->SCOU = NULL;

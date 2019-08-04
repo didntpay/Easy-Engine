@@ -12,7 +12,7 @@ ScannerPanel::ScannerPanel() :wxFrame(NULL, wxID_ANY, "Easy Engine Scanner", wxP
 	listctrl = new wxDataViewListCtrl(this, wxID_ANY, wxPoint(20, 80), wxSize(350, 450));
 	firstscan = new wxButton(this, 10001, "First scan", wxPoint(500, 80), wxSize(80, 25));
 	nextscan = new wxButton(this, wxID_ANY, "Next scan", wxPoint(650, 80), wxSize(80, 25));
-
+	dialog = NULL;
 	wxString choices[] = { "Hex", "Float","String" };
 	valuetype = new wxComboBox(this, wxID_ANY, "Int32", wxPoint(600, 120), wxSize(80, 30), 2, choices, wxCB_DROPDOWN, wxDefaultValidator, "Value options");
 
@@ -26,7 +26,6 @@ ScannerPanel::ScannerPanel() :wxFrame(NULL, wxID_ANY, "Easy Engine Scanner", wxP
 
 ScannerPanel::~ScannerPanel() 
 {
-	delete dialog;
 }
 
 void ScannerPanel::onFirstScanCliced(wxCommandEvent& evt) 
@@ -41,5 +40,13 @@ void ScannerPanel::onFirstScanCliced(wxCommandEvent& evt)
 
 void ScannerPanel::onOpenProcessClicked (wxCommandEvent& evt)
 {
+	if (dialog != NULL) 
+	{
+		evt.Skip();
+		return;
+	}
+
 	dialog = new ProcessesDialog();
+	dialog->Show();
+	evt.Skip();
 }
