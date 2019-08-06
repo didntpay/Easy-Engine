@@ -4,9 +4,11 @@
 
 #include "wx\wx.h"
 #include "wx\dataview.h"
-#include "ProcessesDialog.h"
 #include "..\Easy Engine\MemoryScanner.h"
 
+class ProcessesDialog;
+
+#include "ProcessesDialog.h"
 
 class ScannerPanel :public wxFrame
 {
@@ -16,7 +18,6 @@ private:
 	wxButton* openprocess;
 	wxDataViewListCtrl* listctrl;
 	wxComboBox* valuetype;
-	//ProcessesDialog* dialog = nullptr;
 	ProcessesDialog* dialog;
 	DWORD procID;
 

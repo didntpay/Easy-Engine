@@ -20,16 +20,17 @@ wxEND_EVENT_TABLE()
 	
 }*/
 
-/*ProcessesDialog::ProcessesDialog(ScannerPanel& parent) // constructor with a ScannerPanel
+ProcessesDialog::ProcessesDialog(ScannerPanel& parent) :wxFrame(NULL, 8888, "Select Process", wxPoint(30, 30), wxSize(250, 300)) // constructor with a ScannerPanel
 {
 	SetBackgroundColour(wxColour(232, 232, 232, 255));
 	confirm = new wxButton(this, 1, "Confirm", wxPoint(20, 220), wxDefaultSize);
 	cancel = new wxButton(this, 2, "Cancel", wxPoint(120, 220), wxDefaultSize);
 	this->process_list = new wxListBox(this, wxID_ANY, wxPoint(6, 10), wxSize(220, 200));
 	this->processesids = NULL;
+	this->parentpanel = &parent;
 	printProcessses();
-	//this->parentpanel = parent;
-}*/
+	
+}
 
 /*ProcessesDialog& ProcessesDialog::operator=(const ProcessesDialog& other) 
 {
@@ -52,26 +53,31 @@ void ProcessesDialog::printProcessses() // fix the issue of printing random ass 
 	int lastvalid = -1;
 	for (int i = 0; i < size; i++) 
 	{
-		char processname[1024];
+		char processname[1024] = "Unknown";
 		DWORD rights = PROCESS_QUERY_INFORMATION | PROCESS_VM_READ;
 		HANDLE proc = OpenProcess(rights, false, processesid[i]);
 		if (proc == NULL) 
 		{
 			auto error = GetLastError();
 		}
-		else 
+		else
 		{
-			GetModuleBaseNameA(proc, NULL, &processname[0], sizeof(processname) / sizeof(char));
-			string tmp = processname;
-			int found = tmp.find(".exe");
+			HMODULE hMod;
+			DWORD needed;
+			if (EnumProcessModules(proc, &hMod, sizeof(hMod), &needed)) 
+			{
+				GetModuleBaseNameA(proc, NULL, &processname[0], sizeof(processname) / sizeof(char));
+				string tmp = processname;
+				int found = tmp.find(".exe");
 
-			if(found != string::npos && (lastvalid == -1 || tmp != tracker[lastvalid]))//keep in mind that all module with 
-			{//same name would occur together, so comparing with the last one would
-			//get to the result
+				//if (found != string::npos && (lastvalid == -1 || tmp != tracker[lastvalid]))//keep in mind that all module with 
+				//{//same name would occur together, so comparing with the last one would
+				//get to the result
 				this->process_list->AppendString(processname);
 				tracker.push_back(tmp);
 				this->processesids[lastvalid] = processesid[i];
 				lastvalid++;
+				//}
 			}
 				
 		}
@@ -82,10 +88,10 @@ void ProcessesDialog::printProcessses() // fix the issue of printing random ass 
 
 void ProcessesDialog::onConfirmClicked(wxCommandEvent& evt)
 {
-	int index = process_list->GetSelection();
+	int index = this->process_list->GetSelection();
 	
 	if(index != wxNOT_FOUND)
-		//this->parentpanel->updateProcID(this->processesids[index]);
+		this->parentpanel->updateProcID(this->processesids[index - 1]);
 
 	evt.Skip();
 }

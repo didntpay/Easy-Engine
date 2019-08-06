@@ -53,7 +53,7 @@ void ScannerPanel::onOpenProcessClicked (wxCommandEvent& evt)
 		return;
 	}
 
-	this->dialog =  new ProcessesDialog();
+	this->dialog =  new ProcessesDialog(*this);
 	this->dialog->Show();
 	evt.Skip();
 }

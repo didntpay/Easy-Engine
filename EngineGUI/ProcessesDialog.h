@@ -8,10 +8,11 @@
 #include <Windows.h>
 #include <psapi.h>
 #include <vector>
-//#include "ScannerPanel.h"
 using namespace std;
 
+class ScannerPanel;
 
+#include "ScannerPanel.h"
 
 class ProcessesDialog : public wxFrame //the panel to pop up when open process is clicked
 {
@@ -20,13 +21,13 @@ private:
 	wxListBox* process_list;
 	wxButton* confirm;
 	wxButton* cancel;
-	//ScannerPanel parentpanel;
+	ScannerPanel* parentpanel;
 
 
 public:
 	ProcessesDialog();
 	//ProcessesDialog(ProcessesDialog& other);
-	//ProcessesDialog(ScannerPanel& parent);
+	ProcessesDialog(ScannerPanel& parent);
 	//ProcessesDialog& operator=(const ProcessesDialog& other);
 	~ProcessesDialog();
 	void printProcessses();
