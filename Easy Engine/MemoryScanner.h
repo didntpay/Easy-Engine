@@ -95,12 +95,11 @@ private:
 	DWORD pid;
 	HANDLE hProc;
 	ScannerOutput* SCOU;
-	UINT32 size;
-
+	int size;
 
 public:
 
-	MemoryScanner<T>::MemoryScanner(DWORD procID)
+	MemoryScanner(DWORD procID)
 	{
 		this->pid = procID;
 		this->hProc = NULL;
@@ -108,11 +107,26 @@ public:
 		this->size = NULL;
 	}
 
+	MemoryScanner(const MemoryScanner<T>& other) 
+	{
+		this->SCOU = other.SCOU;
+		this->hProc = other.hProc;
+		this->pid = other.pid;
+		this->size = other.size;
+	}
+
 	//template <typename T>
 	void MemoryScanner<T>::init()
 	{
 		DWORD access = PROCESS_VM_OPERATION | PROCESS_VM_READ | PROCESS_QUERY_INFORMATION;
 		this->hProc = OpenProcess(access, false, this->pid);
+	}
+
+	
+
+	int MemoryScanner<T>::getSize()
+	{
+		return this->size;
 	}
 
 	//template <typename T>
@@ -153,7 +167,7 @@ public:
 			T* buffer = (T*)malloc(mbi.RegionSize + 1);
 			if (ReadProcessMemory(this->hProc, mbi.BaseAddress, &buffer[0], mbi.RegionSize, NULL))
 			{
-				uint8_t increament = sizeof(T);
+				int8_t increament = sizeof(T);
 
 				for (int i = 0; i < mbi.RegionSize; i += increament)
 				{
@@ -180,7 +194,7 @@ public:
 		this->SCOU = (ScannerOutput*)malloc(sizeof(ScannerOutput) * SCOU_V.size());
 		this->size = SCOU_V.size();
 
-		transferElement(SCOU, SCOU_V);
+		transferElement(this->SCOU, SCOU_V);
 		return 0x10;
 	}
 
@@ -237,6 +251,11 @@ public:
 
 	}
 
+	ScannerOutput* MemoryScanner<T>::getSCOU()
+	{
+		return this->SCOU;
+	}
+
 
 	void MemoryScanner<T>::transferElement(MemoryScanner<T>::ScannerOutput* values, vector<MemoryScanner<T>::ScannerOutput>& temp)
 	{
@@ -247,9 +266,14 @@ public:
 		}
 	}
 
+	//This is a situtation where all the memory scanner object is local variables
+	//which is essentially all pointing to the the address of a LPVOID variable
+	//freeing the memory inside is deleting the where the LPVOID points to 
+	//and when LPVOID accesses it next time it will trigger exception
+	//so leave the job to the LPVOID to free up memory
 	MemoryScanner::~MemoryScanner() 
 	{
-		free(this->SCOU);
+		//free(this->SCOU);
 		this->SCOU = NULL;
 	}
 };

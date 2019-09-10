@@ -7,11 +7,17 @@
 
 int main()
 {
-	MemoryScanner<float> * ms = new MemoryScanner<float>(10132);
+	MemoryScanner<float> * ms = new MemoryScanner<float>(16504);
 	ms->init();
 	ScannerInput SCIN(0, 0);
-	ms->firstScan(99.5);
-	ms->scanNext(100);
+	ms->firstScan(100);
+	//ms->scanNext(100);
+	cout << "Address           Values" << endl;
+	for (int i = 0; i < ms->getSize(); i++)
+	{
+		cout << ms->getSCOU()[i].address;
+		cout << "   " << ms->getSCOU()[i].value << endl;
+	}
 	ms->~MemoryScanner();
 	delete ms;
 	ms = NULL;

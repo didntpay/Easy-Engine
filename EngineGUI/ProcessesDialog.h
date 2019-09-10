@@ -1,7 +1,6 @@
 #pragma once
-#ifndef PROCESS_DIALOG_H
-
-#define PROCESS_DIALOG_H
+#ifndef PROCESSDIALOG_H
+#define PROCESSDIALOG_H
 
 #include "wx\wx.h"
 #include <string>
@@ -10,9 +9,9 @@
 #include <vector>
 using namespace std;
 
-class ScannerPanel;
-
-#include "ScannerPanel.h"
+//this file is included in ScannerPanel.h
+class ScannerPanel; //forward declaration to avoid nested include loops
+//see https://stackoverflow.com/questions/4757565/what-are-forward-declarations-in-c for reference
 
 class ProcessesDialog : public wxFrame //the panel to pop up when open process is clicked
 {

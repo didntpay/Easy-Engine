@@ -1,10 +1,12 @@
 #pragma once
-#ifndef SCANNER_PANEL_H
-#define SCANNER_PANEL_H
+#ifndef SCANNERPANEL_H
+#define SCANNERPANEL_H
 
 #include "wx\wx.h"
 #include "wx\dataview.h"
+#include "wx\listctrl.h"
 #include "..\Easy Engine\MemoryScanner.h"
+#include <sstream>
 
 class ProcessesDialog;
 
@@ -20,6 +22,9 @@ private:
 	wxComboBox* valuetype;
 	ProcessesDialog* dialog;
 	DWORD procID;
+	LPVOID ms;//memory scanner
+	wxTextCtrl* targetvalue;
+	int scantype;
 
 public:
 
@@ -32,8 +37,15 @@ public:
 
 	ScannerPanel& operator= (const ScannerPanel& other);
 	void updateProcID(int id);
+	void printScannedResult(int type, MemoryScanner<int>* ms_int = NULL, 
+							MemoryScanner<float>* ms_float = NULL);
+	void onSecondScanClicked(wxCommandEvent& evt);
 
 	wxDECLARE_EVENT_TABLE();
+
+private:
+	//helper functions
+	string toUpperCase(string& original);
 };
 
 #endif

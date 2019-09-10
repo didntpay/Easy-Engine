@@ -85,17 +85,6 @@ void ProcessesDialog::printProcessses() // fix the issue of printing random ass 
 	}
 }
 
-
-void ProcessesDialog::onConfirmClicked(wxCommandEvent& evt)
-{
-	int index = this->process_list->GetSelection();
-	
-	if(index != wxNOT_FOUND)
-		this->parentpanel->updateProcID(this->processesids[index - 1]);
-
-	evt.Skip();
-}
-
 void ProcessesDialog::onCancelClicked(wxCommandEvent& evt)
 {
 	this->Close();
