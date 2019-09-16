@@ -22,6 +22,12 @@ ScannerPanel::ScannerPanel() :wxFrame(NULL, wxID_ANY, "Easy Engine Scanner", wxP
 		NULL);
 	scantype = NULL;
 
+	meaubar = new wxMenuBar();
+	tool_menu = new wxMenu();
+	tool_menu->Append(wxID_OPEN, "AI finder");
+	meaubar->Append(tool_menu, "Tools");
+	SetMenuBar(meaubar);
+
 	listctrl->AppendTextColumn("Value");
 	listctrl->AppendTextColumn("Address");
 	listctrl->AppendTextColumn("Previous value");

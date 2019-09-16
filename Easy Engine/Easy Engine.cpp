@@ -7,7 +7,7 @@
 
 int main()
 {
-	MemoryScanner<float> * ms = new MemoryScanner<float>(16504);
+	MemoryScanner<float> * ms = new MemoryScanner<float>(8228);
 	ms->init();
 	ScannerInput SCIN(0, 0);
 	ms->firstScan(100);

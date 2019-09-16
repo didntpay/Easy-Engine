@@ -26,6 +26,9 @@ private:
 	wxTextCtrl* targetvalue;
 	int scantype;
 
+	wxMenuBar* meaubar;
+	wxMenu* tool_menu;
+
 public:
 
 	ScannerPanel();

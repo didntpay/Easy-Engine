@@ -139,7 +139,6 @@ public:
 		DWORD add_end = (DWORD)info.lpMaximumApplicationAddress;
 		DWORD pagesize = info.dwPageSize;
 
-
 		vector<MEMORY_BASIC_INFORMATION> search_region;
 		vector<ScannerOutput> SCOU_V; //temporary
 
